@@ -581,7 +581,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyRef: {fileID: 1593231890352820, guid: 0b3e8cd2638139f4a98021d3c91f8589, type: 2}
-  numberOfEnemies: 64
+  numberOfEnemies: 1
   minSpawn: 0
   maxSpawn: 49
   FoodManagerRef: {fileID: 496556573}
@@ -1392,6 +1392,7 @@ GameObject:
   - component: {fileID: 1770692432}
   - component: {fileID: 1770692431}
   - component: {fileID: 1770692430}
+  - component: {fileID: 1770692433}
   - component: {fileID: 1770692429}
   - component: {fileID: 1770692428}
   - component: {fileID: 1770692427}
@@ -1493,6 +1494,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1770692433
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1770692426}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.6
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1833049966
 GameObject:
   m_ObjectHideFlags: 0

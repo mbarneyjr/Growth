@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4772484636535788}
   - component: {fileID: 33805550826411480}
   - component: {fileID: 135602532248822070}
+  - component: {fileID: 135202505060428876}
   - component: {fileID: 23317779520341068}
   - component: {fileID: 114668141443732352}
   - component: {fileID: 54756577295224160}
@@ -110,6 +111,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FoodManagerRef: {fileID: 0}
+--- !u!135 &135202505060428876
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1593231890352820}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.6
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &135602532248822070
 SphereCollider:
   m_ObjectHideFlags: 1
