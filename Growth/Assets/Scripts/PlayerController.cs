@@ -15,21 +15,50 @@ public class PlayerController : MonoBehaviour
 
     public void Respawn()
     {
-        gameObject.transform.localScale = new Vector3(1, 1, 1);
-        gameObject.GetComponent<Renderer>().material.color = new Vector4(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
+        ResetSize();
+        RandomizeColor();
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         transform.position = new Vector3(0.0f, 1.0f, 0.0f);
     }
 
+    private void RandomizeColor()
+    {
+        gameObject.GetComponent<Renderer>().material.color = new Vector4(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
+    }
+
+    private void ResetSize()
+    {
+        gameObject.transform.localScale = new Vector3(1, 1, 1);
+    }
+
     private void AddSize(float otherRadius)
     {
-        double otherVolume = 4.0f * Math.PI * Math.Pow(otherRadius, 3) / 3;
         float myRadius = gameObject.transform.localScale.x;
-        double myVolume = 4.0f * Math.PI * Math.Pow(myRadius, 3) / 3;
-        double myNewVolume = myVolume + otherVolume;
-        double myNewRadius = Math.Pow((3 * myNewVolume) / (4 * Math.PI), 1.0 / 3.0);
-        gameObject.transform.localScale = new Vector3((float)myNewRadius, (float)myNewRadius, (float)myNewRadius);
+        float myNewRadius = (float)Math.Pow(Math.Pow(myRadius, 3.0f) + Math.Pow(otherRadius, 3.0f), 1.0f / 3.0f);
+        gameObject.transform.localScale = new Vector3(myNewRadius, myNewRadius, myNewRadius);
+        gameObject.transform.position = new Vector3(transform.position.x, transform.position.y + (myNewRadius - myRadius), transform.position.z);
+        Debug.Log("New radius: " + myNewRadius);
+        Debug.Log("Setting y to: " + transform.position.y);
+    }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Food"))
+        {
+            AddSize(other.transform.localScale.x);
+            other.GetComponent<FoodController>().Respawn();
+        }
+        else if (other.CompareTag("Enemy"))
+        {
+            if (other.transform.localScale.x < transform.localScale.x) // Player will eat enemy
+            {
+                AddSize(other.transform.localScale.x);
+            }
+            else
+            {
+                Respawn();
+            }
+        }
     }
 
     void FixedUpdate()
