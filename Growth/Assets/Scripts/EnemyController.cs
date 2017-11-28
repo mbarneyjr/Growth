@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using System;
 using System.Linq;
 
@@ -13,8 +14,8 @@ public class EnemyController : MonoBehaviour {
     private float speed;
 
     public GameObject FoodManagerRef;
-
-    private GameObject TargetFood;
+    private List<GameObject> Foods;
+    private int TargetFood = -1;
 
     public void SetParameters(float minPosition, float maxPosition, Vector3 center, GameObject foodManager, float enemySpeed)
     {
@@ -25,12 +26,18 @@ public class EnemyController : MonoBehaviour {
         speed = enemySpeed;
     }
 
+    public void OnFoodEaten()
+    {
+        NavigateToClosestFood();
+    }
+
     public void Respawn()
     {
         ResetSize();
         RandomizeColor();
         RandomizePosition();
         GetComponent<Rigidbody>().velocity = Vector3.zero;
+        NavigateToClosestFood();
     }
 
     private void RandomizePosition()
@@ -48,33 +55,26 @@ public class EnemyController : MonoBehaviour {
     }
 
     // set the direction to find
-    private void FindClosestFood()
+    private void NavigateToClosestFood()
     {
-        float radius = 100.0f;
-        List<Collider> hitColliders;
-        List<Collider> foods = new List<Collider>();
+        TargetFood = -1;
+        Foods = FoodManagerRef.GetComponent<FoodManager>().GetFoods();
+        float closestDistance = Mathf.Infinity;
 
-        hitColliders = Physics.OverlapSphere(transform.position, radius).ToList();
-
-        for (int i = 0; i < hitColliders.Count; i++)
+        for (int i = 0; i < Foods.Count; i++)
         {
-            if (hitColliders[i].CompareTag("Food"))
+            float distance = Vector3.Distance(Foods[i].transform.position, transform.position);
+            if (distance < closestDistance)
             {
-                foods.Add(hitColliders[i]);
+                TargetFood = i;
+                closestDistance = distance;
             }
         }
-        if (foods.Count > 0)
-        {
-            float closestDistance = (foods[0].transform.position - transform.position).magnitude;
-            TargetFood = foods[0].gameObject;
-            for (int i = 0; i < foods.Count; i++)
-            {
-                if ((foods[i].transform.position - transform.position).magnitude < closestDistance)
-                {
-                    TargetFood = foods[i].gameObject;
-                }
-            }
-        }
+        // navigate to the closest food
+        GetComponent<NavMeshAgent>().SetDestination(Foods[TargetFood].transform.position);
+        GetComponent<NavMeshAgent>().speed = speed;
+        // subscribe closest food target
+        Foods[TargetFood].GetComponent<FoodController>().SubscribeEnemy(gameObject);
     }
 
     private void AddSize(float otherRadius)
@@ -82,6 +82,7 @@ public class EnemyController : MonoBehaviour {
         float myRadius = gameObject.transform.localScale.x;
         float myNewRadius = (float)Math.Pow(Math.Pow(myRadius, 3.0f) + Math.Pow(otherRadius, 3.0f), 1.0f / 3.0f);
         gameObject.transform.localScale = new Vector3(myNewRadius, myNewRadius, myNewRadius);
+        gameObject.transform.position = new Vector3(transform.position.x, transform.position.y + (myNewRadius - myRadius), transform.position.z);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -89,7 +90,6 @@ public class EnemyController : MonoBehaviour {
         if (other.CompareTag("Food"))
         {
             AddSize(other.transform.localScale.x);
-            other.GetComponent<FoodController>().Respawn();
         }
         else if (other.CompareTag("Player") || other.CompareTag("Enemy"))
         {
@@ -97,7 +97,7 @@ public class EnemyController : MonoBehaviour {
             {
                 AddSize(other.transform.localScale.x);
             }
-            else
+            else if (other.transform.localScale.x > transform.localScale.x)
             {
                 Respawn();
             }
@@ -106,6 +106,7 @@ public class EnemyController : MonoBehaviour {
         {
             Respawn();
         }
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
     }
 
     private void RandomizeColor()
@@ -118,12 +119,11 @@ public class EnemyController : MonoBehaviour {
         gameObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
     }
 
-    public void Update()
+    private void Update()
     {
-        FindClosestFood();
-        float step = speed * Time.deltaTime;
-        Vector3 myPos = new Vector3(transform.position.x, 0, transform.position.z);
-        Vector3 targetPos = new Vector3(TargetFood.transform.position.x, 0, TargetFood.transform.position.z);
-        transform.position = Vector3.MoveTowards(myPos, targetPos, step);
+        if (transform.position.y < -10.0f)
+        {
+            Respawn();
+        }
     }
 }

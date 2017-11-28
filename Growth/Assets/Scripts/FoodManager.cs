@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FoodManager : MonoBehaviour {
 
+    public GameObject EnemyManagerRef;
     public GameObject FoodRef;
     public int numberOfFood;
 
@@ -11,14 +12,9 @@ public class FoodManager : MonoBehaviour {
 
     public float minSpawn, maxSpawn;
 
-    public List<Vector3> GetFoods()
+    public List<GameObject> GetFoods()
     {
-        List<Vector3> positions = new List<Vector3>();
-        for (int i = 0; i < numberOfFood; i++)
-        {
-            positions.Add(Foods[i].transform.position);
-        }
-        return positions;
+        return Foods;
     }
 
 	// Use this for initialization
@@ -30,6 +26,7 @@ public class FoodManager : MonoBehaviour {
             Foods[i].GetComponent<FoodController>().SetParameters(minSpawn, maxSpawn, transform.position);
             Foods[i].GetComponent<FoodController>().Respawn();
         }
+        EnemyManagerRef.GetComponent<EnemyManager>().CreateEnemies();
     }
 	
 	// Update is called once per frame

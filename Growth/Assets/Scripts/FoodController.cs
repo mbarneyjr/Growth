@@ -7,11 +7,30 @@ public class FoodController : MonoBehaviour {
     private float minPos, maxPos;
     private Vector3 spawnCenter;
 
+    private List<GameObject> EnemiesTracking = new List<GameObject>();
+
     public void SetParameters(float minPosition, float maxPosition, Vector3 center)
     {
         spawnCenter = center;
         minPos = minPosition;
         maxPos = maxPosition;
+    }
+
+    protected virtual void OnFoodEaten()
+    {
+        if (EnemiesTracking.Count > 0)
+        {
+            for (int i = EnemiesTracking.Count - 1; i >= 0; i--)
+            {
+                EnemiesTracking[i].GetComponent<EnemyController>().OnFoodEaten();
+                EnemiesTracking.RemoveAt(i); //unsubscribe enemy
+            }
+        }
+    }
+
+    public void SubscribeEnemy(GameObject subscribingEnemy)
+    {
+        EnemiesTracking.Add(subscribingEnemy);
     }
 
     public void Respawn()
@@ -20,6 +39,7 @@ public class FoodController : MonoBehaviour {
         RandomizeColor();
         RandomizePosition();
         GetComponent<Rigidbody>().velocity = Vector3.zero;
+        OnFoodEaten();
     }
 
     private void RandomizePosition()
@@ -38,7 +58,11 @@ public class FoodController : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Respawn"))
+        if (other.CompareTag("Enemy"))
+        {
+            Respawn();
+        }
+        else if (other.CompareTag("Player"))
         {
             Respawn();
         }
@@ -52,5 +76,13 @@ public class FoodController : MonoBehaviour {
     private void ResetSize()
     {
         gameObject.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+    }
+
+    private void Update()
+    {
+        if (transform.position.y < -10.0f)
+        {
+            Respawn();
+        }
     }
 }

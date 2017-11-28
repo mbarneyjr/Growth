@@ -5,6 +5,7 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
+    public GameObject GameMasterRef;
     public float speed;
 
     // Use this for initialization
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviour
         RandomizeColor();
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         transform.position = new Vector3(0.0f, 1.0f, 0.0f);
+        GameMasterRef.GetComponent<GameMaster>().ResetScore();
     }
 
     private void RandomizeColor()
@@ -37,24 +39,28 @@ public class PlayerController : MonoBehaviour
         float myNewRadius = (float)Math.Pow(Math.Pow(myRadius, 3.0f) + Math.Pow(otherRadius, 3.0f), 1.0f / 3.0f);
         gameObject.transform.localScale = new Vector3(myNewRadius, myNewRadius, myNewRadius);
         gameObject.transform.position = new Vector3(transform.position.x, transform.position.y + (myNewRadius - myRadius), transform.position.z);
-        Debug.Log("New radius: " + myNewRadius);
-        Debug.Log("Setting y to: " + transform.position.y);
+    }
+
+    private void AddScore(int points)
+    {
+        GameMasterRef.GetComponent<GameMaster>().AddScore(points);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Food"))
         {
+            AddScore(1);
             AddSize(other.transform.localScale.x);
-            other.GetComponent<FoodController>().Respawn();
         }
         else if (other.CompareTag("Enemy"))
         {
             if (other.transform.localScale.x < transform.localScale.x) // Player will eat enemy
             {
+                AddScore(5);
                 AddSize(other.transform.localScale.x);
             }
-            else
+            else if (other.transform.localScale.x > transform.localScale.x) // enemy will eat player
             {
                 Respawn();
             }
@@ -71,9 +77,11 @@ public class PlayerController : MonoBehaviour
         GetComponent<Rigidbody>().AddForce(movement * speed);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
+        if (transform.position.y < -10.0f)
+        {
+            Respawn();
+        }
     }
 }

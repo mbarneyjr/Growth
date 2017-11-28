@@ -17,6 +17,10 @@ public class EnemyManager : MonoBehaviour {
     void Start()
     {
         Enemies = new List<GameObject>();
+    }
+
+    public void CreateEnemies()
+    {
         for (int i = 0; i < numberOfEnemies; i++)
         {
             Enemies.Add(Instantiate(EnemyRef) as GameObject);
@@ -24,7 +28,7 @@ public class EnemyManager : MonoBehaviour {
             Enemies[i].GetComponent<EnemyController>().Respawn();
         }
     }
-	
+
 	// Update is called once per frame
 	void Update () {
 		
