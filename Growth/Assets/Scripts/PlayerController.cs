@@ -5,6 +5,7 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
+    public GameObject CameraRef;
     public GameObject GameMasterRef;
     public float speed;
 
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
         GetComponent<Rigidbody>().velocity = Vector3.zero;
         transform.position = new Vector3(0.0f, 1.0f, 0.0f);
         GameMasterRef.GetComponent<GameMaster>().ResetScore();
+        CameraRef.GetComponent<CameraController>().ResetDistance();
     }
 
     private void RandomizeColor()
@@ -39,6 +41,7 @@ public class PlayerController : MonoBehaviour
         float myNewRadius = (float)Math.Pow(Math.Pow(myRadius, 3.0f) + Math.Pow(otherRadius, 3.0f), 1.0f / 3.0f);
         gameObject.transform.localScale = new Vector3(myNewRadius, myNewRadius, myNewRadius);
         gameObject.transform.position = new Vector3(transform.position.x, transform.position.y + (myNewRadius - myRadius), transform.position.z);
+        CameraRef.GetComponent<CameraController>().AdjustDistance(myNewRadius / myRadius);
     }
 
     private void AddScore(int points)

@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour {
     public GameObject EnemyRef;
+    public GameObject Ghost;
     public int numberOfEnemies;
+    public float baseSize;
 
     List<GameObject> Enemies = new List<GameObject>();
 
@@ -24,7 +26,7 @@ public class EnemyManager : MonoBehaviour {
         for (int i = 0; i < numberOfEnemies; i++)
         {
             Enemies.Add(Instantiate(EnemyRef) as GameObject);
-            Enemies[i].GetComponent<EnemyController>().SetParameters(minSpawn, maxSpawn, transform.position, FoodManagerRef, enemySpeed);
+            Enemies[i].GetComponent<EnemyController>().SetParameters(minSpawn, maxSpawn, transform.position, FoodManagerRef, enemySpeed, baseSize, Ghost);
             Enemies[i].GetComponent<EnemyController>().Respawn();
         }
     }

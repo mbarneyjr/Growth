@@ -9,21 +9,25 @@ public class EnemyController : MonoBehaviour {
 
     private float minPos, maxPos;
     private Vector3 spawnCenter;
+    private float baseSize;
 
     private Vector3 direction = new Vector3(0.0f, 0.0f, 0.0f);
     private float speed;
 
     public GameObject FoodManagerRef;
+    public GameObject GhostRef;
     private List<GameObject> Foods;
     private int TargetFood = -1;
 
-    public void SetParameters(float minPosition, float maxPosition, Vector3 center, GameObject foodManager, float enemySpeed)
+    public void SetParameters(float minPosition, float maxPosition, Vector3 center, GameObject foodManager, float enemySpeed, float size, GameObject ghost)
     {
         spawnCenter = center;
         minPos = minPosition;
         maxPos = maxPosition;
         FoodManagerRef = foodManager;
         speed = enemySpeed;
+        baseSize = size;
+        GhostRef = ghost;
     }
 
     public void OnFoodEaten()
@@ -49,7 +53,7 @@ public class EnemyController : MonoBehaviour {
             posY = UnityEngine.Random.Range(-maxPos, maxPos);
         } while ((posX < minPos && posX > -minPos) && (posY < minPos && posY > -minPos));
 
-        Vector3 newPosition = new Vector3(posX, 1.0f, posY);
+        Vector3 newPosition = new Vector3(posX, baseSize / 2.0f, posY);
         newPosition = spawnCenter + newPosition;
         transform.position = newPosition;
     }
@@ -116,7 +120,7 @@ public class EnemyController : MonoBehaviour {
 
     private void ResetSize()
     {
-        gameObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        gameObject.transform.localScale = new Vector3(baseSize, baseSize, baseSize);
     }
 
     private void Update()
