@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameMaster : MonoBehaviour {
 
     public GameObject StartButton;
     public GameObject ExitButton;
-    public GameObject Blur;
-    public GameObject MainMenuCam;
     public GameObject ScoreRef;
 
-    private bool isShowing = true;
-    private bool gameStarted = false;
+    public bool isShowing;
     private int score = 0;
 
     public void UpdateScore()
@@ -42,9 +40,7 @@ public class GameMaster : MonoBehaviour {
         isShowing = !isShowing;
         StartButton.SetActive(isShowing);
         ExitButton.SetActive(isShowing);
-        Blur.SetActive(isShowing);
-        MainMenuCam.SetActive(isShowing);
-        if (isShowing && gameStarted)
+        if (isShowing)
         {
             Time.timeScale = 0;
         }
@@ -54,14 +50,15 @@ public class GameMaster : MonoBehaviour {
         }
     }
 
+    public void StartGame()
+    {
+        SceneManager.LoadScene("GrowthScene");
+    }
+
     void Update()
     {
         if (Input.GetKeyDown("escape"))
         {
-            if (!gameStarted)
-            {
-                gameStarted = true;
-            }
             ToggleMenu();
         }
     }

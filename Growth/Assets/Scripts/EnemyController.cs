@@ -7,12 +7,12 @@ using System.Linq;
 
 public class EnemyController : MonoBehaviour {
 
-    private float minPos, maxPos;
-    private Vector3 spawnCenter;
-    private float baseSize;
+    public float minPos, maxPos;
+    public Vector3 spawnCenter;
+    public float baseSize;
 
     private Vector3 direction = new Vector3(0.0f, 0.0f, 0.0f);
-    private float speed;
+    public float speed;
 
     public GameObject FoodManagerRef;
     public GameObject GhostRef;
