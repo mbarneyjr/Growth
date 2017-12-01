@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameMaster : MonoBehaviour {
 
@@ -11,16 +12,17 @@ public class GameMaster : MonoBehaviour {
     public GameObject ScoreRef;
 
     public bool isShowing;
-    private int score = 0;
+    private float score = 0;
 
     public void UpdateScore()
     {
-        ScoreRef.GetComponent<Text>().text = "Score: " + score;
+        string scoreText = string.Format("Score: {0}", score.ToString());
+        ScoreRef.GetComponent<TextMeshProUGUI>().SetText(scoreText);
     }
 
-    public void AddScore(int points)
+    public void SetScore(float points)
     {
-        score += points;
+        score = points;
         UpdateScore();
     }
 

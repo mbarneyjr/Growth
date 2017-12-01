@@ -35,6 +35,13 @@ public class EnemyController : MonoBehaviour {
         NavigateToClosestFood();
     }
 
+    public void SpawnGhost()
+    {
+        Debug.Log("Spawning Ghost!");
+        GameObject ghost = Instantiate(GhostRef);
+        ghost.GetComponent<GhostController>().CopyAttrubutes(transform.localScale, transform.position, gameObject.GetComponent<Renderer>().material.color);
+    }
+
     public void Respawn()
     {
         ResetSize();
@@ -103,6 +110,7 @@ public class EnemyController : MonoBehaviour {
             }
             else if (other.transform.localScale.x > transform.localScale.x)
             {
+                SpawnGhost();
                 Respawn();
             }
         }

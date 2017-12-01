@@ -44,24 +44,24 @@ public class PlayerController : MonoBehaviour
         CameraRef.GetComponent<CameraController>().AdjustDistance(myNewRadius / myRadius);
     }
 
-    private void AddScore(int points)
+    private void SetScore(float points)
     {
-        GameMasterRef.GetComponent<GameMaster>().AddScore(points);
+        GameMasterRef.GetComponent<GameMaster>().SetScore(points);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Food"))
         {
-            AddScore(1);
             AddSize(other.transform.localScale.x);
+            SetScore(transform.localScale.x);
         }
         else if (other.CompareTag("Enemy"))
         {
             if (other.transform.localScale.x < transform.localScale.x) // Player will eat enemy
             {
-                AddScore(5);
                 AddSize(other.transform.localScale.x);
+                SetScore(transform.localScale.x);
             }
             else if (other.transform.localScale.x > transform.localScale.x) // enemy will eat player
             {
