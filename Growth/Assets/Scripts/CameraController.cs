@@ -29,7 +29,7 @@ public class CameraController : MonoBehaviour
     public void AdjustDistance(float proportion)
     {
         float difference = proportion - 1.0f;
-        difference /= 2.0f;
+        difference /= 1.25f;
         proportion = 1.0f + difference;
         float newMagnitude = offset.magnitude * proportion;
         offset = offset.normalized * newMagnitude;

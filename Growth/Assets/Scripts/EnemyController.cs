@@ -19,6 +19,11 @@ public class EnemyController : MonoBehaviour {
     private List<GameObject> Foods;
     private int TargetFood = -1;
 
+    private void Start()
+    {
+        InvokeRepeating("RemoveMass",1.0f, 5.0f);
+    }
+
     public void SetParameters(float minPosition, float maxPosition, Vector3 center, GameObject foodManager, float enemySpeed, float size, GameObject ghost)
     {
         spawnCenter = center;
@@ -37,7 +42,6 @@ public class EnemyController : MonoBehaviour {
 
     public void SpawnGhost()
     {
-        Debug.Log("Spawning Ghost!");
         GameObject ghost = Instantiate(GhostRef);
         ghost.GetComponent<GhostController>().CopyAttrubutes(transform.localScale, transform.position, gameObject.GetComponent<Renderer>().material.color);
     }
@@ -94,6 +98,15 @@ public class EnemyController : MonoBehaviour {
         float myNewRadius = (float)Math.Pow(Math.Pow(myRadius, 3.0f) + Math.Pow(otherRadius, 3.0f), 1.0f / 3.0f);
         gameObject.transform.localScale = new Vector3(myNewRadius, myNewRadius, myNewRadius);
         gameObject.transform.position = new Vector3(transform.position.x, transform.position.y + (myNewRadius - myRadius), transform.position.z);
+    }
+
+    private void RemoveMass()
+    {
+        if (gameObject.transform.localScale.x > baseSize)
+        {
+            Debug.Log("Removing mass");
+            AddSize(-0.5f);
+        }
     }
 
     private void OnTriggerEnter(Collider other)

@@ -5,6 +5,8 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
+    public AudioClip DeathClip;
+    public AudioClip KillClip;
     public GameObject CameraRef;
     public GameObject GameMasterRef;
     public float speed;
@@ -13,6 +15,15 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         Respawn();
+        InvokeRepeating("RemoveMass", 1.0f, 1.0f);
+    }
+
+    private void RemoveMass()
+    {
+        if (gameObject.transform.localScale.x > 1)
+        {
+            AddSize(-0.5f);
+        }
     }
 
     public void Respawn()
@@ -23,6 +34,7 @@ public class PlayerController : MonoBehaviour
         transform.position = new Vector3(0.0f, 1.0f, 0.0f);
         GameMasterRef.GetComponent<GameMaster>().ResetScore();
         CameraRef.GetComponent<CameraController>().ResetDistance();
+        PlayDeath();
     }
 
     private void RandomizeColor()
@@ -35,6 +47,18 @@ public class PlayerController : MonoBehaviour
         gameObject.transform.localScale = new Vector3(1, 1, 1);
     }
 
+    private void PlayDeath()
+    {
+        GetComponent<AudioSource>().clip = DeathClip;
+        GetComponent<AudioSource>().Play();
+    }
+
+    private void PlayKill()
+    {
+        GetComponent<AudioSource>().clip = KillClip;
+        GetComponent<AudioSource>().Play();
+    }
+
     private void AddSize(float otherRadius)
     {
         float myRadius = gameObject.transform.localScale.x;
@@ -42,6 +66,7 @@ public class PlayerController : MonoBehaviour
         gameObject.transform.localScale = new Vector3(myNewRadius, myNewRadius, myNewRadius);
         gameObject.transform.position = new Vector3(transform.position.x, transform.position.y + (myNewRadius - myRadius), transform.position.z);
         CameraRef.GetComponent<CameraController>().AdjustDistance(myNewRadius / myRadius);
+        SetScore(transform.localScale.x);
     }
 
     private void SetScore(float points)
@@ -54,14 +79,13 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Food"))
         {
             AddSize(other.transform.localScale.x);
-            SetScore(transform.localScale.x);
         }
         else if (other.CompareTag("Enemy"))
         {
             if (other.transform.localScale.x < transform.localScale.x) // Player will eat enemy
             {
+                PlayKill();
                 AddSize(other.transform.localScale.x);
-                SetScore(transform.localScale.x);
             }
             else if (other.transform.localScale.x > transform.localScale.x) // enemy will eat player
             {
