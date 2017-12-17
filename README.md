@@ -15,4 +15,4 @@ Your score is displayed at the bottom of the screen, and reflects the radius of 
 
 ## Technical details
 
-The game is built in Unity, and opens to the Unity Resolution Dialogue. It should work well for all resolutions and aspect ratios, even full screen.
+The game is built in Unity, and opens to the Unity Resolution Dialogue. It should work well for resolutions above `800x600`.
